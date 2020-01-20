@@ -1,35 +1,40 @@
-#Mi riscrivo una funzione che trova il massimo di una lista
+from timeit import time
+from random import randrange
 
-def mymax(list):
+# Mi riscrivo una funzione che trova il minimo di una lista
+def mymin(list):
+    m_idx = 0
     m = list[0]
-    for n in list:
-        if n > m:
+    for n_idx, n in enumerate(list):
+        if n < m:
             m = n
-    return m
+            m_idx = n_idx
+    return m, m_idx
 
 # Lista di partenza da ordinare
-
-mylist = [200,7,99,15]
-
-#Lista ordinata, inizialmente vuota
-
-sorted_list = []
+mylist = [randrange(1000) for _ in range(50000)]
 
 # Algoritmo di ordinamento
+#print("lista prima:")
+#print(mylist)
+start_time = time.time()
 
 for idx in range(len(mylist)):
-    m = mymax(mylist)
-    sorted_list.append(m)
-    mylist.remove(m)
+    # compute minimum and the index relative to the slice
+    m, m_idx = mymin(mylist[idx::])
+    # convert relative index into global index
+    m_idx += idx
+    swap = mylist[idx]
+    mylist[idx] = m
+    mylist[m_idx] = swap
+    
+print("Ordinamento completo")
+stop_time = time.time()
+print(f"{(stop_time-start_time):.7f}")
 
-    #Stampa della lista appena calcolata
-print(sorted_list)
 
+# Stampo la lista appena calcolata
+#print("lista dopo:")
+#print(mylist)
 
-
-     # Condizioni che devono essere soddisfatte
-
-assert sorted_list[0] == 200
-assert sorted_list[1] == 99
-assert sorted_list[2] == 15
-assert sorted_list[3] == 7
+assert mylist==sorted(mylist)
